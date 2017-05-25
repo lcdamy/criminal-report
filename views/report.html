@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+    <head>
+        <title>AIDIS</title>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <link href="../../css/bootstrap.css" rel="stylesheet">
+        <link href="../../font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <style>
+            #logo1 {
+                float: right;
+                width: 100px;
+                margin-top: 16px;
+            }
+            #logo2 {
+                float: left;
+                width: 100px;
+
+            }
+        </style>
+    </head>
+    <body class="bgc">
+        <div class="wrap">
+            <div style="background: rgb(4, 109, 159);height: 100px">
+            <div>
+                <img id="logo1" alt="logo1" src="../../img/dr.png"/><br>
+            </div>
+            <div>
+                <img id= "logo2"  alt="logo2" src="../../img/Police.png"/>
+            </div>
+            <h1>
+                Automated ID Information System Based on Criminal Records
+            </h1>
+            </div>
+            <div id="pdfRenderer" style="height:800px">
+
+            </div>
+        </div>
+
+        <script src="../../js/jquery.js"></script>
+        <script src="../../js/bootstrap.js"></script>
+        <script src="../../js/angular.min.js"></script>
+        <script src="../../js/services.js"></script>
+        <script src="../../js/application.js"></script>
+        <script src="../../js/dirPagination.js"></script>
+        <script src="../../js/SimpleAjaxUploader.js"></script>
+        <script src="../../js/pdfobject.js"></script>
+         <script>PDFObject.embed("<?php echo $file;?>", "#pdfRenderer");</script>
+    </body>
+</html>

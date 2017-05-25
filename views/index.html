@@ -1,0 +1,411 @@
+<!doctype html>
+<html>
+    <head>
+        <title>AIDIS</title>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/sweetalert.css" rel="stylesheet">
+        <style>
+            #logo1 {
+                float: right;
+                width: 100px;
+                margin-top: 16px;
+            }
+            #logo2 {
+                float: left;
+                width: 100px;
+            }
+        </style>
+    </head>
+    <body class="bgc" ng-app="So_Pharma" ng-controller="index_ctrl" ng-init="session_dash('btnupload', 'loadinggif')">
+        <div class="wrap">
+            <div>
+                <div>
+                    <img id="logo1" alt="logo1" src="../img/dr.png"/><br>
+                </div>
+                <div>
+                    <img id= "logo2"  alt="logo2" src="../img/Police.png"/>
+                </div>
+                <h1> 
+                    Automated ID Information System Based on Criminal Records     
+                </h1>		
+            </div>           
+            <nav class="menu">
+                <ul> 
+                    <li class="activeme"> <a href="/" ><i class="fa fa-home" aria-hidden="true"></i>&nbsp;HOME </a></li>
+                    <li> <a href="/crime/info"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;CRIMINAL-LIST </a></li>
+                    <li> <a href="/crime/publish"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;MOST-WANTED </a></li>
+                    <li ng-if="'<?php echo $access; ?>'==='2'"> <a href="/crime/setting"><i class="fa fa-cogs" aria-hidden="true"></i>&nbsp;SETTING</a></li>
+                    <li> <a href="" ng-click="logout()"> <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;LOGOUT </a></li>
+                </ul>
+            </nav>
+            <div class="content">
+                <center style="margin-bottom:8px;font-weight: bold;"><h3>**LIST OF WANTED PERSONS**</h3></center>
+                <div style="margin-left: 16px">
+                    <span style="padding: 2px 10px 2px 10px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);background:green"></span> &nbsp;&nbsp;: <i>Release-State</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span style="padding: 2px 10px 2px 10px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);" class="btn-danger"></span> &nbsp;&nbsp;: <i>Jail-State</i>
+                </div>
+                <div class="col-md-4 col-md-offset-8"><input type="text" class="form-control" placeholder="search" ng-model="searchcrime"></div>
+                <br><br><br>
+                <div class="col-md-4" dir-paginate="cri in criminales| filter:searchcrime | itemsPerPage:9" pagination-id="pagecriminal" >
+                    <div style="padding: 16px;text-align: center;margin: 6px" class="crime">
+                        <div class="pull-right">
+                            <span style="background:black;color:#fff;border-radius: 10px;padding: 6px 5px 6px 7px;cursor:pointer" ng-click="initializeupdatecriminal(cri)" data-toggle="tooltip" data-placement="right" title="Add an other crime to this criminal">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </span><br><br>
+                            <a href="/criminal/report/{{cri.id}}" target="_blank" class="btn-info" data-toggle="tooltip" data-placement="right" title="Print and release this criminal" style="color:#fff;border-radius: 10px;padding: 6px 5px 6px 7px;text-decoration: none">
+                                <i class="fa fa-print" aria-hidden="true"></i>
+                            </a><br><br>
+                            <span style="color:#fff;border-radius: 10px;padding: 6px 5px 6px 7px;" class="btn-danger" ng-class='{"release": cri.release === "1"}' ng-click="updatestate(cri.id)" data-toggle="tooltip" data-placement="right" title="Edit this criminal">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                            </span>
+                            <br><br>
+                            <span style="color:#006FFC;border-radius: 10px;padding: 6px 8px 6px 8px;border:1px solid #006FFC" data-toggle="tooltip" data-placement="right" title="number of crime this criminal has">
+                                {{cri.count}}
+                            </span>
+                        </div>
+                        <img src="{{cri.coverurl}}" alt="Mountain View" style="width:150px;height:160px;">
+                        <h6> Names:<b>{{cri.fname}} {{cri.lname}}</b></h6> 
+                        <h6>Crime: <b>{{cri.crimename}}</b></h6>
+                    </div>
+                </div>
+                <div class="col-md-12" ng-show="(criminales | filter:searchcrime).length === 0"><center><h4>No criminal found.</h4><br><span style="font-size:64px;color:red;"> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span></center></div>
+                <div class="col-md-12">
+                    <dir-pagination-controls pagination-id="pagecriminal" ></dir-pagination-controls>
+                </div>
+                <div class= "footer" style="color:#fff;padding: 8px;position: absolute;bottom:0px">
+                    <footer> <center><h4> &copy;2016 AIDIS System | All rights reserved.</h4> </center> </footer>
+                </div>
+            </div>
+            <aside style="padding: 8px;color:#fff" id="addcriminalnew" > 
+                <h4>ADD CRIMINAL</h4>  
+                <p style="font-size:80%"><i> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;Before add your criminal you must search if the criminal already exist in our system!</i></p>
+                <form>
+                    <button class="btn btn-info" id="btnupload" ng-click="uploadAdminProfile('btnupload', 'loadinggif')">upload photo</button><br><br>
+                    <div id="loadinggif" style="display:none">Please wait image uploading...</div>
+                    <input type="text" ng-model="crime.fname" name="firstname" class="form-control" placeholder="first name"><br>
+                    <input type="text" ng-model="crime.lname" name="lastname" class="form-control" placeholder="last name"><br>
+                    <input type="text" ng-model="crime.idnumber" name="id_number" class="form-control" placeholder="id number"><br>
+                    <select name="Gender" ng-model="crime.gender" class="form-control">
+                        <option value="">Gender</option>
+                        <option value="male" ng-selected="crime.gender == 'male'">Male</option>
+                        <option value="female" ng-selected="crime.gender == 'female'">Female</option>
+                    </select><br>
+                    <select ng-model="crime.country" name="Country" class="form-control">
+                        <option value="">Country</option>
+                        <option ng-selected="crime.country == 'Afghanistan'"> Afghanistan</option>
+                        <option ng-selected="crime.country == 'Åland Islands'"> Åland Islands</option>
+                        <option ng-selected="crime.country == 'Albania'"> Albania</option>
+                        <option ng-selected="crime.country == 'Algeria'"> Algeria</option>
+                        <option ng-selected="crime.country == 'American Samoa'"> American Samoa</option>
+                        <option ng-selected="crime.country == 'Andorra'"> Andorra</option>
+                        <option ng-selected="crime.country == 'Angola'"> Angola</option>
+                        <option ng-selected="crime.country == 'Anguilla'"> Anguilla</option>
+                        <option ng-selected="crime.country == 'Antarctica'"> Antarctica</option>
+                        <option ng-selected="crime.country == 'Antigua and Barbuda'"> Antigua and Barbuda</option>
+                        <option ng-selected="crime.country == 'Argentina'"> Argentina</option>
+                        <option ng-selected="crime.country == 'Armenia'"> Armenia</option>
+                        <option ng-selected="crime.country == 'Aruba'"> Aruba</option>
+                        <option ng-selected="crime.country == 'Australia'"> Australia</option>
+                        <option ng-selected="crime.country == 'Austria'"> Austria</option>
+                        <option ng-selected="crime.country == 'Azerbaijan'"> Azerbaijan</option>
+                        <option ng-selected="crime.country == 'Bahamas'"> Bahamas</option>
+                        <option ng-selected="crime.country == 'Bahrain'"> Bahrain</option>
+                        <option ng-selected="crime.country == 'Bangladesh'"> Bangladesh</option>
+                        <option ng-selected="crime.country == 'Barbados'"> Barbados</option>
+                        <option ng-selected="crime.country == 'Belarus'"> Belarus</option>
+                        <option ng-selected="crime.country == 'Belgium'"> Belgium</option>
+                        <option ng-selected="crime.country == 'Belize'"> Belize</option>
+                        <option ng-selected="crime.country == 'Benin'"> Benin</option>
+                        <option ng-selected="crime.country == 'Bermuda'"> Bermuda</option>
+                        <option ng-selected="crime.country == 'Bhutan'"> Bhutan</option>
+                        <option ng-selected="crime.country == 'Bolivia, Plurinational State of'"> Bolivia, Plurinational State of</option>
+                        <option ng-selected="crime.country == 'Bonaire, Sint Eustatius and Saba'"> Bonaire, Sint Eustatius and Saba</option>
+                        <option ng-selected="crime.country == 'Bosnia and Herzegovina'"> Bosnia and Herzegovina</option>
+                        <option ng-selected="crime.country == 'Botswana'"> Botswana</option>
+                        <option ng-selected="crime.country == 'Bouvet Island'"> Bouvet Island</option>
+                        <option ng-selected="crime.country == 'Brazil'"> Brazil</option>
+                        <option ng-selected="crime.country == 'British Indian Ocean Territory'"> British Indian Ocean Territory</option>
+                        <option ng-selected="crime.country == 'Brunei Darussalam'"> Brunei Darussalam</option>
+                        <option ng-selected="crime.country == 'Bulgaria'"> Bulgaria</option>
+                        <option ng-selected="crime.country == 'Burkina Faso'"> Burkina Faso</option>
+                        <option ng-selected="crime.country == 'Burundi'"> Burundi</option>
+                        <option ng-selected="crime.country == 'Cambodia'"> Cambodia</option>
+                        <option ng-selected="crime.country == 'Cameroon'"> Cameroon</option>
+                        <option ng-selected="crime.country == 'Canada'"> Canada</option>
+                        <option ng-selected="crime.country == 'Cape Verde'"> Cape Verde</option>
+                        <option ng-selected="crime.country == 'Cayman Islands'"> Cayman Islands</option>
+                        <option ng-selected="crime.country == 'Central African Republic'"> Central African Republic</option>
+                        <option ng-selected="crime.country == 'Chad'"> Chad</option>
+                        <option ng-selected="crime.country == 'Chile'"> Chile</option>
+                        <option ng-selected="crime.country == 'China'"> China</option>
+                        <option ng-selected="crime.country == 'Christmas Island'"> Christmas Island</option>
+                        <option ng-selected="crime.country == 'Cocos (Keeling) Islands'"> Cocos (Keeling) Islands</option>
+                        <option ng-selected="crime.country == 'Colombia'"> Colombia</option>
+                        <option ng-selected="crime.country == 'Comoros'"> Comoros</option>
+                        <option ng-selected="crime.country == 'Congo'"> Congo</option>
+                        <option ng-selected="crime.country == 'Congo, the Democratic Republic of the'"> Congo, the Democratic Republic of the</option>
+                        <option ng-selected="crime.country == 'Cook Islands'"> Cook Islands </option>
+                        <option ng-selected="crime.country == 'Costa Rica'"> Costa Rica </option>
+                        <option ng-selected="crime.country == 'Côte d\'Ivoire'"> Côte d'Ivoire </option>
+                        <option ng-selected="crime.country == 'Croatia'"> Croatia </option>
+                        <option ng-selected="crime.country == 'Cuba'"> Cuba</option>
+                        <option ng-selected="crime.country == 'Curaçao'"> Curaçao</option>
+                        <option ng-selected="crime.country == 'Cyprus'"> Cyprus</option>
+                        <option ng-selected="crime.country == 'Czech Republic'">Czech Republic</option>
+                        <option ng-selected="crime.country == 'Denmark'">Denmark</option>
+                        <option ng-selected="crime.country == 'Djibouti'">Djibouti</option>
+                        <option ng-selected="crime.country == 'Dominica'">Dominica</option>
+                        <option ng-selected="crime.country == 'Dominican Republic'">Dominican Republic</option>
+                        <option ng-selected="crime.country == 'Ecuador'">Ecuador</option>
+                        <option ng-selected="crime.country == 'Egypt'">Egypt</option>
+                        <option ng-selected="crime.country == 'El Salvador'">El Salvador</option>
+                        <option ng-selected="crime.country == 'Equatorial Guinea'">Equatorial Guinea</option>
+                        <option ng-selected="crime.country == 'Eritrea'">Eritrea</option>
+                        <option ng-selected="crime.country == 'Estonia'">Estonia</option>
+                        <option ng-selected="crime.country == 'Ethiopia'">Ethiopia</option>
+                        <option ng-selected="crime.country == 'Falkland Islands (Malvinas)'">Falkland Islands (Malvinas)</option>
+                        <option ng-selected="crime.country == 'Faroe Islands'">Faroe Islands</option>
+                        <option ng-selected="crime.country == 'Fiji'">Fiji</option>
+                        <option ng-selected="crime.country == 'Finland'">Finland</option>
+                        <option ng-selected="crime.country == 'France'">France</option>
+                        <option ng-selected="crime.country == 'French Guiana'">French Guiana</option>
+                        <option ng-selected="crime.country == 'French Polynesia'">French Polynesia</option>
+                        <option ng-selected="crime.country == 'French Southern Territories'">French Southern Territories</option>
+                        <option ng-selected="crime.country == 'Gabon'">Gabon</option>
+                        <option ng-selected="crime.country == 'Gambia'">Gambia</option>
+                        <option ng-selected="crime.country == 'Georgia'">Georgia</option>
+                        <option ng-selected="crime.country == 'Germany'">Germany</option>
+                        <option ng-selected="crime.country == 'Ghana'">Ghana</option>
+                        <option ng-selected="crime.country == 'Gibraltar'">Gibraltar</option>
+                        <option ng-selected="crime.country == 'Greece'">Greece</option>
+                        <option ng-selected="crime.country == 'Greenland'">Greenland</option>
+                        <option ng-selected="crime.country == 'Grenada'">Grenada</option>
+                        <option ng-selected="crime.country == 'Guadeloupe'">Guadeloupe</option>
+                        <option ng-selected="crime.country == 'Guam'">Guam</option>
+                        <option ng-selected="crime.country == 'Guatemala'">Guatemala</option>
+                        <option ng-selected="crime.country == 'Guernsey'">Guernsey</option>
+                        <option ng-selected="crime.country == 'Guinea'">Guinea</option>
+                        <option ng-selected="crime.country == 'Guinea-Bissau'">Guinea-Bissau</option>
+                        <option ng-selected="crime.country == 'Guyana'">Guyana</option>
+                        <option ng-selected="crime.country == 'Haiti'">Haiti</option>
+                        <option ng-selected="crime.country == 'Heard Island and McDonald Islands'">Heard Island and McDonald Islands</option>
+                        <option ng-selected="crime.country == 'Holy See (Vatican City State)'">Holy See (Vatican City State)</option>
+                        <option ng-selected="crime.country == 'Honduras'">Honduras</option>
+                        <option ng-selected="crime.country == 'Hong Kong'">Hong Kong</option>
+                        <option ng-selected="crime.country == 'Hungary'">Hungary</option>
+                        <option ng-selected="crime.country == 'Iceland'">Iceland</option>
+                        <option ng-selected="crime.country == 'India'">India</option>
+                        <option ng-selected="crime.country == 'Indonesia'">Indonesia</option>
+                        <option ng-selected="crime.country == 'Iran, Islamic Republic of'">Iran, Islamic Republic of</option>
+                        <option ng-selected="crime.country == 'Iraq'">Iraq</option>
+                        <option ng-selected="crime.country == 'Ireland'">Ireland</option>
+                        <option ng-selected="crime.country == 'Isle of Man'">Isle of Man</option>
+                        <option ng-selected="crime.country == 'Israel'">Israel</option>
+                        <option ng-selected="crime.country == 'Italy'">Italy</option>
+                        <option ng-selected="crime.country == 'Jamaica'">Jamaica</option>
+                        <option ng-selected="crime.country == 'Japan'">Japan</option>
+                        <option ng-selected="crime.country == 'Jersey'">Jersey</option>
+                        <option ng-selected="crime.country == 'Jordan'">Jordan</option>
+                        <option ng-selected="crime.country == 'Kazakhstan'">Kazakhstan</option>
+                        <option ng-selected="crime.country == 'Kenya'">Kenya</option>
+                        <option ng-selected="crime.country == 'Kiribati'">Kiribati</option>
+                        <option ng-selected="crime.country == 'Korea, Democratic People\'s Republic of'">Korea, Democratic People's Republic of</option>
+                        <option ng-selected="crime.country == 'Korea, Republic of'">Korea, Republic of</option>
+                        <option ng-selected="crime.country == 'Kuwait'">Kuwait</option>
+                        <option ng-selected="crime.country == 'Kyrgyzstan'">Kyrgyzstan</option>
+                        <option ng-selected="crime.country == 'Lao People\'s Democratic Republic'">Lao People's Democratic Republic</option>
+                        <option ng-selected="crime.country == 'Latvia'">Latvia</option>
+                        <option ng-selected="crime.country == 'Lebanon'">Lebanon</option>
+                        <option ng-selected="crime.country == 'Lesotho'">Lesotho</option>
+                        <option ng-selected="crime.country == 'Liberia'">Liberia</option>
+                        <option ng-selected="crime.country == 'Libya'">Libya</option>
+                        <option ng-selected="crime.country == 'Liechtenstein'">Liechtenstein</option>
+                        <option ng-selected="crime.country == 'Lithuania'">Lithuania</option>
+                        <option ng-selected="crime.country == 'Luxembourg'">Luxembourg</option>
+                        <option ng-selected="crime.country == 'Macao'">Macao</option>
+                        <option ng-selected="crime.country == 'Macedonia, the former Yugoslav Republic of'">Macedonia, the former Yugoslav Republic of</option>
+                        <option ng-selected="crime.country == 'Madagascar'">Madagascar</option>
+                        <option ng-selected="crime.country == 'Malawi'">Malawi</option>
+                        <option ng-selected="crime.country == 'Malaysia'">Malaysia</option>
+                        <option ng-selected="crime.country == 'Maldives'">Maldives</option>
+                        <option ng-selected="crime.country == 'Mali'">Mali</option>
+                        <option ng-selected="crime.country == 'Malta'">Malta</option>
+                        <option ng-selected="crime.country == 'Marshall Islands'">Marshall Islands</option>
+                        <option ng-selected="crime.country == 'Mauritania'">Mauritania</option>
+                        <option ng-selected="crime.country == 'Mauritius'">Mauritius</option>
+                        <option ng-selected="crime.country == 'Mayotte'">Mayotte</option>
+                        <option ng-selected="crime.country == 'Mexico'">Mexico</option>
+                        <option ng-selected="crime.country == 'Micronesia, Federated States of'">Micronesia, Federated States of</option>
+                        <option ng-selected="crime.country == 'Moldova, Republic of'">Moldova, Republic of</option>
+                        <option ng-selected="crime.country == 'Monaco'">Monaco</option>
+                        <option ng-selected="crime.country == 'Mongolia'">Mongolia</option>
+                        <option ng-selected="crime.country == 'Montenegro'">Montenegro</option>
+                        <option ng-selected="crime.country == 'Montserrat'">Montserrat</option>
+                        <option ng-selected="crime.country == 'Morocco'">Morocco</option>
+                        <option ng-selected="crime.country == 'Mozambique'">Mozambique</option>
+                        <option ng-selected="crime.country == 'Myanmar'">Myanmar</option>
+                        <option ng-selected="crime.country == 'Namibia'">Namibia</option>
+                        <option ng-selected="crime.country == 'Nauru'">Nauru</option>
+                        <option ng-selected="crime.country == 'Nepal'">Nepal</option>
+                        <option ng-selected="crime.country == 'Netherlands'">Netherlands</option>
+                        <option ng-selected="crime.country == 'New Caledonia'">New Caledonia</option>
+                        <option ng-selected="crime.country == 'New Zealand'">New Zealand</option>
+                        <option ng-selected="crime.country == 'Nicaragua'">Nicaragua</option>
+                        <option ng-selected="crime.country == 'Niger'">Niger</option>
+                        <option ng-selected="crime.country == 'Nigeria'">Nigeria</option>
+                        <option ng-selected="crime.country == 'Niue'">Niue</option>
+                        <option ng-selected="crime.country == '>Norfolk Island'">Norfolk Island</option>
+                        <option ng-selected="crime.country == 'Northern Mariana Islands'">Northern Mariana Islands</option>
+                        <option ng-selected="crime.country == 'Norway'">Norway</option>
+                        <option ng-selected="crime.country == 'Oman'">Oman</option>
+                        <option ng-selected="crime.country == 'Pakistan'">Pakistan</option>
+                        <option ng-selected="crime.country == 'Palau'">Palau</option>
+                        <option ng-selected="crime.country == 'Palestinian Territory, Occupied'">Palestinian Territory, Occupied</option>
+                        <option ng-selected="crime.country == 'Panama'">Panama</option>
+                        <option ng-selected="crime.country == 'Papua New Guinea'">Papua New Guinea</option>
+                        <option ng-selected="crime.country == 'Paraguay'">Paraguay</option>
+                        <option ng-selected="crime.country == 'Peru'">Peru</option>
+                        <option ng-selected="crime.country == 'Philippines'">Philippines</option>
+                        <option ng-selected="crime.country == 'Pitcairn'">Pitcairn</option>
+                        <option ng-selected="crime.country == 'Poland'">Poland</option>
+                        <option ng-selected="crime.country == 'Portugal'">Portugal</option>
+                        <option ng-selected="crime.country == 'Puerto Rico'">Puerto Rico</option>
+                        <option ng-selected="crime.country == 'Qatar'">Qatar</option>
+                        <option ng-selected="crime.country == 'Réunion'">Réunion</option>
+                        <option ng-selected="crime.country == 'Romania'">Romania</option>
+                        <option ng-selected="crime.country == 'Russian Federation'">Russian Federation</option>
+                        <option ng-selected="crime.country == 'Rwanda'">Rwanda </option>
+                        <option ng-selected="crime.country == 'Saint Barthélemy'">Saint Barthélemy</option>
+                        <option ng-selected="crime.country == 'Saint Helena, Ascension and Tristan da Cunha'">Saint Helena, Ascension and Tristan da Cunha</option>
+                        <option ng-selected="crime.country == 'Saint Kitts and Nevis'">Saint Kitts and Nevis</option>
+                        <option ng-selected="crime.country == 'Saint Lucia'">Saint Lucia</option>
+                        <option ng-selected="crime.country == 'Saint Martin (French part)'">Saint Martin (French part)</option>
+                        <option ng-selected="crime.country == 'Saint Pierre and Miquelon'">Saint Pierre and Miquelon</option>
+                        <option ng-selected="crime.country == 'Saint Vincent and the Grenadines'">Saint Vincent and the Grenadines</option>
+                        <option ng-selected="crime.country == 'Samoa'">Samoa</option>
+                        <option ng-selected="crime.country == 'San Marino'">San Marino</option>
+                        <option ng-selected="crime.country == 'Sao Tome and Principe'">Sao Tome and Principe</option>
+                        <option ng-selected="crime.country == 'Saudi Arabia'">Saudi Arabia</option>
+                        <option ng-selected="crime.country == 'Senegal'">Senegal</option>
+                        <option ng-selected="crime.country == 'Serbia'">Serbia</option>
+                        <option ng-selected="crime.country == 'Seychelles'">Seychelles</option>
+                        <option ng-selected="crime.country == 'Sierra Leone'">Sierra Leone</option>
+                        <option ng-selected="crime.country == 'Singapore'">Singapore</option>
+                        <option ng-selected="crime.country == 'Sint Maarten (Dutch part)'">Sint Maarten (Dutch part)</option>
+                        <option ng-selected="crime.country == 'Slovakia'">Slovakia</option>
+                        <option ng-selected="crime.country == 'Slovenia'">Slovenia</option>
+                        <option ng-selected="crime.country == 'Solomon Islands'">Solomon Islands</option>
+                        <option ng-selected="crime.country == 'Somalia'">Somalia</option>
+                        <option ng-selected="crime.country == 'South Africa'">South Africa</option>
+                        <option ng-selected="crime.country == 'South Georgia and the South Sandwich Islands'">South Georgia and the South Sandwich Islands</option>
+                        <option ng-selected="crime.country == 'South Sudan'">South Sudan</option>
+                        <option ng-selected="crime.country == 'Spain'">Spain</option>
+                        <option ng-selected="crime.country == 'Sri Lanka'">Sri Lanka</option>
+                        <option ng-selected="crime.country == 'Sudan'">Sudan</option>
+                        <option ng-selected="crime.country == 'Suriname'">Suriname</option>
+                        <option ng-selected="crime.country == 'Svalbard and Jan Mayen'">Svalbard and Jan Mayen</option>
+                        <option ng-selected="crime.country == 'Swaziland'">Swaziland</option>
+                        <option ng-selected="crime.country == 'Sweden'">Sweden</option>
+                        <option ng-selected="crime.country == 'Switzerland'">Switzerland</option>
+                        <option ng-selected="crime.country == 'Syrian Arab Republic'">Syrian Arab Republic</option>
+                        <option ng-selected="crime.country == 'Taiwan, Province of China'">Taiwan, Province of China</option>
+                        <option ng-selected="crime.country == 'Tajikistan'">Tajikistan</option>
+                        <option ng-selected="crime.country == 'Tanzania, United Republic of'">Tanzania, United Republic of</option>
+                        <option ng-selected="crime.country == 'Timor-Leste'">Thailand</option>
+                        <option ng-selected="crime.country == 'Timor-Leste'">Timor-Leste</option>
+                        <option ng-selected="crime.country == 'Togo'">Togo</option>
+                        <option ng-selected="crime.country == 'Tokelau'">Tokelau</option>
+                        <option ng-selected="crime.country == 'Tonga'">Tonga</option>
+                        <option ng-selected="crime.country == 'Trinidad and Tobago'">Trinidad and Tobago</option>
+                        <option ng-selected="crime.country == 'Tunisia'">Tunisia</option>
+                        <option ng-selected="crime.country == 'Turkey'">Turkey</option>
+                        <option ng-selected="crime.country == 'Turkmenistan'">Turkmenistan</option>
+                        <option ng-selected="crime.country == 'Turks and Caicos Islands'">Turks and Caicos Islands</option>
+                        <option ng-selected="crime.country == 'Tuvalu'">Tuvalu</option>
+                        <option ng-selected="crime.country == 'Uganda'">Uganda</option>
+                        <option ng-selected="crime.country == 'Ukraine'">Ukraine</option>
+                        <option ng-selected="crime.country == 'United Arab Emirates'">United Arab Emirates</option>
+                        <option ng-selected="crime.country == 'United Kingdom'">United Kingdom</option>
+                        <option ng-selected="crime.country == 'United States'">United States</option>
+                        <option ng-selected="crime.country == 'United States Minor Outlying Islands'">United States Minor Outlying Islands</option>
+                        <option ng-selected="crime.country == 'Uruguay'">Uruguay</option>
+                        <option ng-selected="crime.country == 'Uzbekistan'">Uzbekistan</option>
+                        <option ng-selected="crime.country == 'Vanuatu'">Vanuatu</option>
+                        <option ng-selected="crime.country == 'Venezuela, Bolivarian Republic of'">Venezuela, Bolivarian Republic of</option>
+                        <option ng-selected="crime.country == 'Viet Nam'">Viet Nam</option>
+                        <option ng-selected="crime.country == 'Virgin Islands, British'">Virgin Islands, British</option>
+                        <option ng-selected="crime.country == 'Virgin Islands, U.S.'">Virgin Islands, U.S.</option>
+                        <option ng-selected="crime.country == 'Wallis and Futuna'">Wallis and Futuna</option>
+                        <option ng-selected="crime.country == 'Western Sahara'">Western Sahara</option>
+                        <option ng-selected="crime.country == 'Yemen'">Yemen</option>
+                        <option ng-selected="crime.country == 'Zambia'">Zambia</option>
+                        <option ng-selected="crime.country == 'Zimbabwe'">Zimbabwe</option>
+                    </select><br> 
+                    <label>Date of crime :</label>
+                    <input type="date" ng-model="crime.crimedate" class="form-control"><br>
+                    <label>Date of birth day :</label>
+                    <input type="date" ng-model="crime.dob" class="form-control"><br>
+                    <select name="Crime" ng-model="crime.crimename" class="form-control">
+                        <option value="">Criminal case</option>
+                        <option ng-selected="crime.crimename == 'Maritime Problems'"> Maritime Problems</option>
+                        <option ng-selected="crime.crimename == 'Traffic accidents'"> Traffic accidents</option>
+                        <option ng-selected="crime.crimename == 'Corruption'"> Corruption</option>
+                        <option ng-selected="crime.crimename == 'Gender Based Violence'"> Gender Based Violence</option>
+                        <option ng-selected="crime.crimename == 'Child based Violence'"> Child based Violence</option>
+                        <option ng-selected="crime.crimename == 'Abused by Police Officer'"> Abused by Police Officer</option>
+                    </select><br>
+                    <textarea name="comments" ng-model="crime.description" rows="5" cols="20" class="form-control" placeholder="crime history"></textarea><br>                       
+                    <div class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_errornew" style="text-align:left;display:none">
+                        <strong> <i class="fa fa-times-circle"></i></strong> <span id="isa_error_messagenew"></span>
+                    </div>
+                    <div class="alert alert-success col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_successnew" style="text-align:left;display:none">
+                        <strong> <i class="fa fa-check"></i></strong> <span id="isa_success_messagenew"></span>
+                    </div>
+                    <button class="btn btn-success pull-right" ng-click="savecrime(crime)">save</button>
+                </form>
+            </aside>
+            <aside style="padding: 8px;color:#fff;display: none;text-align: center" id="addcriminal" > 
+                <h4>UPDATE DOC CRIMINAL</h4>  
+                <h5><i class="fa fa-user" aria-hidden="true"></i>&nbsp;{{crime.fname}} {{crime.lname}}</h5>  
+                <form>
+                    <select name="Crime" ng-model="crimenamenew" class="form-control">
+                        <option value="">Criminal case</option>
+                        <option> Maritime Problems</option>
+                        <option> Traffic accidents</option>
+                        <option> Corruption</option>
+                        <option> Gender Based Violence</option>
+                        <option> Child based Violence</option>
+                        <option> Abused by Police Officer</option>
+                    </select><br>
+                    <label>Date of crime :</label>
+                    <input type="date" ng-model="crimedatenew" class="form-control"><br>
+                    <textarea name="comments" ng-model="descriptionnew" rows="5" cols="20" class="form-control" placeholder="crime history"></textarea><br>                       
+                    <div class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_error" style="text-align:left;display:none">
+                        <strong> <i class="fa fa-times-circle"></i></strong> <span id="isa_error_message"></span>
+                    </div>
+                    <div class="alert alert-success col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_success" style="text-align:left;display:none">
+                        <strong> <i class="fa fa-check"></i></strong> <span id="isa_success_message"></span>
+                    </div>
+                    <button class="btn btn-success pull-right" ng-click="savecrimeup(crime, crimenamenew, crimedatenew, descriptionnew)">save</button>
+                </form>
+            </aside>
+        </div>
+        <script src="../js/jquery.js"></script>
+        <script src="../js/bootstrap.js"></script>
+        <script src="../js/angular.min.js"></script>
+        <script src="../js/services.js"></script>
+        <script src="../js/application.js"></script>
+        <script src="../js/dirPagination.js"></script>
+        <script src="../js/SimpleAjaxUploader.js"></script>  
+        <script src="../js/toaster.js" type="text/javascript"></script>
+        <script src='../js/sweetalert.min.js' charset='utf-8'></script>
+        <script>
+                        $(document).ready(function () {
+                        $('[data-toggle="tooltip"]').tooltip();
+                        });
+        </script>
+    </body>
+</html>

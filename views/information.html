@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+    <head>
+        <title>AIDS</title>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="../popover/remodal.css" rel="stylesheet">
+        <link href="../popover/remodal-default-theme.css" rel="stylesheet">
+        <link href="../css/sweetalert.css" rel="stylesheet">
+        <style>
+            #logo1 {
+                float: right;
+                width: 100px;
+                margin-top: 16px;
+            }
+            #logo2 {
+                float: left;
+                width: 100px;
+
+            }
+        </style>
+    </head>
+
+    <body class="bgc" ng-app="So_Pharma" ng-controller="info_ctrl" ng-init="session_dash('uploadbtn', 'loadingxslfile')">
+        <div class="wrap">
+            <div>
+                <img id="logo1" alt="logo1" src="../img/dr.png"/><br>
+            </div>
+            <div>
+                <img id= "logo2"  alt="logo2" src="../img/Police.png"/>
+            </div>
+            <h1> 
+                Automated ID Information System Based on Criminal Records     
+            </h1>	
+            <nav class="menu">
+                <ul> 
+                    <li> <a href="/" ><i class="fa fa-home" aria-hidden="true"></i>&nbsp;HOME </a></li>
+                    <li  class="activeme"> <a href="/crime/info"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;CRIMINAL-LIST </a></li>
+                    <li> <a href="/crime/publish"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;MOST-WANTED </a></li>
+                    <li ng-if="'<?php echo $access; ?>' === '2'"> <a href="/crime/setting"><i class="fa fa-cogs" aria-hidden="true"></i>&nbsp;SETTING</a></li>
+                    <li> <a href="" ng-click="logout()"> <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;LOGOUT </a></li>
+                </ul>
+            </nav>
+            <div class="content" >
+                <center style="margin-bottom:8px;"><h3>**CRIMINALS DETAILS**</h3></center>
+                <div class="row" style="margin-top:16px;padding: 16px">
+                    <div class="col-md-7"  style="padding: 0px;background:#fff;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);margin-left: 16px">
+                        <div id='section-to-print'>
+                            <div class="col-md-5" style="padding: 0px">                            
+                                <img src="../{{crimeinfo.coverurl}}" alt="Mountain View" style="width:170px;height:213px;">
+                            </div>  
+                            <div class="col-md-7">                            
+                                <h5><b>NAME : </b>{{crimeinfo.fname}} {{crimeinfo.lname}}</h5>
+                                <h5><b>DBO : </b>{{crimeinfo.dob}}</h5>
+                                <h5><b>Gender : </b>{{crimeinfo.gender}}</h5>
+                                <h5><b>Country : </b>{{crimeinfo.country}}</h5>
+                                <h5><b>Natinal ID : </b>{{crimeinfo.idnumber}}</h5>
+                                <h5><b>Duration in prison : </b><span style='color:orangered;font-weight: bold;'><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{crimeinfo.crimedate_}}</span></h5>
+                            </div>  
+                        </div>
+                        <span style="position:absolute;bottom:2px;right:2px;font-size:16px;cursor: pointer" onclick="printDiv('section-to-print')"><i class="fa fa-print" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="col-md-4" style="padding-right: 0px;">
+                        <h4 style="color:#006FFC;border-bottom: 1px solid #006FFC">History</h4>
+                        <table width="100%">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <td>No</td>
+                                    <td>Crime-name</td>
+                                    <td>Happen-date</td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size:80%;color:#555;">
+                                <tr ng-repeat="hist in history">
+                                    <td>{{$index + 1}}.</td>
+                                    <td><i>{{hist.crimename}}</i></td>
+                                    <td><i>{{hist.crimedate}}</i>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" style="font-size:16px" data-toggle="tooltip" data-placement="right" title="{{crimeinfo.description}}"><i class="fa fa-info" aria-hidden="true"></i></a></td>
+                                    <td><a href="" ng-click="deleteCrime(hist.id)" style="font-size:16px;color:#c41a08"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:32px;padding: 16px">
+                    <div class="col-md-12">
+                        <a href="/criminal/list/export" target="_blank"><button class="btn btn-warning"><i class="fa fa-bar-chart"></i> Export data Excel</button></a>
+                        <a href="#criminalexcel"><button class="btn btn-danger"  ><i class="fa fa-external-link"></i> Import data Excel</button></a>
+
+                    </div>
+                </div>
+                <div class="row" style="margin-top:16px;padding: 16px">
+                    <div class="col-md-8 col-md-offset-2">
+                        <input type="text" placeholder="search" ng-model="searchcrime" class="form-control">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:16px;padding: 16px">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>NAME</th>
+                                        <th>GENDER</th>
+                                        <th>DOB</th>
+                                        <th>COUNTRY</th>
+                                        <th>NATIONAL ID</th>
+                                        <th>DURATION</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="cri in criminales | filter:searchcrime | itemsPerPage:5" pagination-id="userpage" style="cursor:pointer">
+                                        <td ng-click="readCrime(cri)">{{cri.fname}} {{cri.lname}}</td>
+                                        <td ng-click="readCrime(cri)">{{cri.gender}}</td>
+                                        <td ng-click="readCrime(cri)">{{cri.dob}}</td>
+                                        <td ng-click="readCrime(cri)">{{cri.country}}</td>
+                                        <td ng-click="readCrime(cri)">{{cri.idnumber}}</td>
+                                        <td ng-click="readCrime(cri)">{{cri.crimedate}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="box-footer">
+                                <div class="pull-right table-box-footer">
+                                    <dir-pagination-controls pagination-id="userpage"> </dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class= "footer" style="color:#fff;padding: 8px;position: absolute;bottom:0px">
+                    <footer> <center><h4> &copy;2016 AIDIS System | All rights reserved.</h4> </center> </footer>
+                </div>
+            </div>
+            <aside style="padding: 8px;color:#fff"> 
+                <br><br>
+                <center><h4>**Wanted**</h4></center>
+                <center>
+                    <img src="{{wanted.coverurl}}" alt="Mountain View" style="width:200px;height:200px;">
+                    <h6> Names:<b>{{wanted.fname}} {{wanted.lname}}</b></h6> 
+                    <h6>Crime: <b>{{wanted.crimename}}</b></h6>
+                </center>
+            </aside>
+        </div>
+        <div  class="remodal" data-remodal-id="criminalexcel" role="dialog" style="width:800px !important;position: relative;border:5px solid #1D3944;height:600px">
+            <div class="col-md-12">
+                <h3>Upload an excel here</h3>
+                <section >
+                    <div class="row">
+                        <div class="col-md-12">
+                            <center><h3>Choose a context to save your a file</h3></center>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 myindvidual" ng-class="{'myactive': context === 'individual'}" style="background:#119FBD;color:#fff;text-align: center;padding: 8px 0px;cursor:pointer" ng-click="choosecontext('individual')">INDIVIDUAL SPREADSHEET</div>
+                        <div class="col-md-6 myorganization" ng-class="{'myactive': context === 'organization'}" style="background:#601516;color:#fff;text-align: center;padding: 8px 0px;cursor:pointer" ng-click="choosecontext('organization')">ORGANIZATION SPREADSHEET</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="twobtngroup" style="margin-top: 16px;visibility:hidden">
+                            <div class="col-md-4">
+                                <button class="btn btn-sm" id="uploadbtn" style="color:#fff;border-radius:0px;background: #119fbd" ng-click="uploadexcel('uploadbtn', 'loadingxslfile')"><i class="fa fa-paperclip" aria-hidden="true"></i> IMPORT EXCEL</button>
+                                <button class="btn btn-sm" style="color:#fff;border-radius:0px;background: #1d3944" ng-click="save_excel(spreadsheets, context)"><i class="fa fa-floppy-o " aria-hidden="true"></i> SAVE</button>
+                                <span id="loadingxslfile" style="position:absolute;margin-left: 8px;padding-top: 8px;visibility:hidden">{{import_message}}</span>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        &nbsp;
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="nav nav-pills">
+                                <li ng-repeat="she_li in spreadsheets" ng-class="{'active': she_li.sheet === '1'}"><a data-toggle="pill" href="#sheet{{she_li.sheet}}">{{she_li.sheet}}</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div ng-repeat="she_table in spreadsheets" id="sheet{{she_table.sheet}}" ng-class="{'active': she_table.sheet === '1'}" class="tab-pane fade in ">
+                                    <div style="min-width:500px;overflow-x: auto;">
+                                        <table  class="table no-margin table-condensed table-hover table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:50px">{{header_row[0]}}</th>
+                                                    <th>{{header_row[1]}}</th>
+                                                    <th>{{header_row[2]}}</th>
+                                                    <th>{{header_row[3]}}</th>
+                                                    <th>{{header_row[4]}}</th>
+                                                    <th>{{header_row[5]}}</th>
+                                                    <th>{{header_row[6]}}</th>
+                                                    <th>{{header_row[7]}}</th>
+                                                  
+                                                </tr>
+                                            </thead>
+                                            <tbody style="font-size:80%">
+                                                <tr ng-repeat="row in she_table.rows" ng-if="$index > 0">
+                                                    <td style="width:50px"><input type="text" ng-model="row[0]" style="border:0px;width:50px" disabled ></td>
+                                                    <td><input type="text" ng-model="row[1]" style="border:0px;width:250px"></td>
+                                                    <td><input type="text" ng-model="row[2]" style="border:0px"></td>
+                                                    <td><input type="text" ng-model="row[3]" style="border:0px"></td>
+                                                    <td><input type="text" ng-model="row[4]" style="border:0px"></td>
+                                                    <td><input type="text" ng-model="row[5]" style="border:0px"></td>
+                                                    <td><input type="text" ng-model="row[6]" style="border:0px"></td>
+                                                    <td><input type="text" ng-model="row[7]" style="border:0px"></td>
+                 
+                                                </tr>
+                                            </tbody>
+                                        </table>  
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section><!-- /.content -->
+            </div>
+            <button id='closepop1' data-remodal-action="cancel"  style="position:absolute;top:2px;right:2px">X</button>
+        </div>
+        <script src="../js/jquery.js"></script>
+        <script src="../js/bootstrap.js"></script>
+        <script src="../js/angular.min.js"></script>
+        <script src="../js/services.js"></script>
+        <script src="../js/application.js"></script>
+        <script src="../js/dirPagination.js"></script>
+        <script src="../js/toaster.js" type="text/javascript"></script>
+        <script src='../popover/remodal.min.js' charset='utf-8'></script>
+        <script src='../js/sweetalert.min.js' charset='utf-8'></script>
+        <script src="../js/SimpleAjaxUploader.js"></script>  
+        <script>
+                                                                function printDiv(divName) {
+                                                                    var printContents = document.getElementById(divName).innerHTML;
+                                                                    var originalContents = document.body.innerHTML;
+                                                                    document.body.innerHTML = printContents;
+                                                                    window.print();
+                                                                    document.body.innerHTML = originalContents;
+                                                                };
+        </script>
+    </body>
+</html>

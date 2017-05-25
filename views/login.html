@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+    <head>
+        <title>AIDIS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <style>
+            #logo1 {
+                float: right;
+                width: 100px;
+                margin-top: 16px;
+            }
+            #logo2 {
+                float: left;
+                width: 100px;
+            }
+        </style>
+    </head>
+    <body class="bgc" ng-app="So_Pharma" ng-controller="login_ctrl">
+        <div class="wrap">
+            <div>
+                <div>
+                    <img id="logo1" alt="logo1" src="../img/dr.png"/><br>
+                </div>
+                <div>
+                    <img id= "logo2"  alt="logo2" src="../img/Police.png"/>
+                </div>
+                <h1>Automated ID Information System Based on Criminal Records</h1>		
+            </div>
+
+            <center><h3>AIDIS System</h3></center><br>
+            <center><img src="../img/fingerprint.jpg" alt="Mountain View" style="width:200px;height:200px;"></center>
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">         
+                    <div class="panel-body">  
+                        <form>  
+                            <fieldset>  
+                                <div class="form-group">  
+                                    <input class="form-control" ng-model="sign.username" id="username" placeholder="Email" type="text" >  
+                                </div>
+                                <div class="form-group">  
+                                    <input class="form-control" ng-model="sign.password" id="password" placeholder="Password" type="password">  
+                                </div>
+                                <div class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_error" style="text-align:left;display:none">
+                                    <strong> <i class="fa fa-times-circle"></i></strong> <span id="isa_error_message">{{messageIN}}</span>
+                                </div>
+                                <div class="alert alert-success col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_success" style="text-align:left;display:none">
+                                  <span id="isa_success_message">please wait...</span>
+                                </div>
+                                <button ng-click="signin(sign)" class="btn btn-lg btn-success btn-block">
+                                    Login
+                                </button>
+                            </fieldset>  
+                        </form> 
+                    </div>   
+                </div>
+            </div>
+            <div class="row">
+                <div class= "footer" style="color:#fff;padding: 8px">
+                    <footer> <center><h4>&copy;2016 AIDIS System | All rights reserved.</h4> </center> </footer>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery.js"></script>
+        <script src="../js/bootstrap.js"></script>
+        <script src="../js/angular.min.js"></script>
+        <script src="../js/services.js"></script>
+        <script src="../js/application.js"></script>
+        <script src="../js/dirPagination.js"></script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

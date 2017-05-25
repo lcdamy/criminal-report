@@ -1,0 +1,359 @@
+<!doctype html>
+<html>
+    <head>
+        <title>AIDIS</title>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <style>
+            #logo1 {
+                float: right;
+                width: 100px;
+                margin-top: 16px;
+            }
+            #logo2 {
+                float: left;
+                width: 100px;
+
+            }
+        </style>
+    </head>
+
+    <body class="bgc" ng-app="So_Pharma" ng-controller="pub_ctrl" ng-init="session_dash('btnupload', 'loadinggif')">
+        <div class="wrap">
+            <div>
+                <div>
+                    <img id="logo1" alt="logo1" src="../img/dr.png"/><br>
+                </div>
+                <div>
+                    <img id= "logo2"  alt="logo2" src="../img/Police.png"/>
+                </div>
+                <h1> 
+                    Automated ID Information System Based on Criminal Records     
+                </h1>		
+            </div>  
+            <div>
+                <nav class="menu">
+                    <ul> 
+                        <li> <a href="/" ><i class="fa fa-home" aria-hidden="true"></i>&nbsp;HOME </a></li>
+                        <li> <a href="/crime/info"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;CRIMINAL-LIST </a></li>
+                        <li class="activeme"> <a href="/crime/publish"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;MOST-WANTED </a></li>
+                        <li ng-if="'<?php echo $access; ?>'==='2'"> <a href="/crime/setting"><i class="fa fa-cogs" aria-hidden="true"></i>&nbsp;SETTING</a></li>
+                        <li> <a href="" ng-click="logout()"> <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;LOGOUT </a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="content">
+
+                <center style="margin-bottom:8px;"><h3>**PUBLISH THE MOST WANTED**</h3></center>
+
+                <div class="col-md-8 col-md-offset-2">
+                    <form> 
+                        <button class="btn btn-info" id="btnupload" ng-click="uploadAdminProfile('btnupload', 'loadinggif')">upload photo</button><br><br>
+                        <div id="loadinggif" style="display:none">Please wait image uploading...</div>
+                        <input type="text" ng-model="crime.fname" name="firstname" class="form-control" placeholder="first name"><br>
+                        <input type="text" ng-model="crime.lname" name="lastname" class="form-control" placeholder="last name"><br>
+                        <input type="number" ng-model="crime.idnumber" name="id_number" class="form-control" placeholder="id number"><br>
+                        <select name="Gender" ng-model="crime.gender" class="form-control">
+                            <option value="">Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select><br>
+                        <select ng-model="crime.country" name="Country" class="form-control">
+                            <option value="">Country</option>
+                            <option>Afghanistan</option>
+                            <option>Åland Islands</option>
+                            <option>Albania</option>
+                            <option>Algeria</option>
+                            <option>American Samoa</option>
+                            <option>Andorra</option>
+                            <option>Angola</option>
+                            <option>Anguilla</option>
+                            <option>Antarctica</option>
+                            <option>Antigua and Barbuda</option>
+                            <option>Argentina</option>
+                            <option>Armenia</option>
+                            <option>Aruba</option>
+                            <option>Australia</option>
+                            <option>Austria</option>
+                            <option>Azerbaijan</option>
+                            <option>Bahamas</option>
+                            <option>Bahrain</option>
+                            <option>Bangladesh</option>
+                            <option>Barbados</option>
+                            <option>Belarus</option>
+                            <option>Belgium</option>
+                            <option>Belize</option>
+                            <option>Benin</option>
+                            <option>Bermuda</option>
+                            <option>Bhutan</option>
+                            <option>Bolivia, Plurinational State of</option>
+                            <option>Bonaire, Sint Eustatius and Saba</option>
+                            <option>Bosnia and Herzegovina</option>
+                            <option>Botswana</option>
+                            <option>Bouvet Island</option>
+                            <option>Brazil</option>
+                            <option>British Indian Ocean Territory</option>
+                            <option>Brunei Darussalam</option>
+                            <option>Bulgaria</option>
+                            <option>Burkina Faso</option>
+                            <option>Burundi</option>
+                            <option>Cambodia</option>
+                            <option>Cameroon</option>
+                            <option>Canada</option>
+                            <option>Cape Verde</option>
+                            <option>Cayman Islands</option>
+                            <option>Central African Republic</option>
+                            <option>Chad</option>
+                            <option>Chile</option>
+                            <option>China</option>
+                            <option>Christmas Island</option>
+                            <option>Cocos (Keeling) Islands</option>
+                            <option>Colombia</option>
+                            <option>Comoros</option>
+                            <option>Congo</option>
+                            <option>Congo, the Democratic Republic of congo</option>
+                            <option>Cook Islands </option>
+                            <option>Costa Rica </option>
+                            <option>Côte d'Ivoire </option>
+                            <option>Croatia </option>
+                            <option>Cuba</option>
+                            <option>Curaçao</option>
+                            <option>Cyprus</option>
+                            <option>Czech Republic</option>
+                            <option>Denmark</option>
+                            <option>Djibouti</option>
+                            <option>Dominica</option>
+                            <option>Dominican Republic</option>
+                            <option>Ecuador</option>
+                            <option>Egypt</option>
+                            <option>El Salvador</option>
+                            <option>Equatorial Guinea</option>
+                            <option>Eritrea</option>
+                            <option>Estonia</option>
+                            <option>Ethiopia</option>
+                            <option>Falkland Islands (Malvinas)</option>
+                            <option>Faroe Islands</option>
+                            <option>Fiji</option>
+                            <option>Finland</option>
+                            <option>France</option>
+                            <option>French Guiana</option>
+                            <option>French Polynesia</option>
+                            <option>French Southern Territories</option>
+                            <option>Gabon</option>
+                            <option>Gambia</option>
+                            <option>Georgia</option>
+                            <option>Germany</option>
+                            <option>Ghana</option>
+                            <option>Gibraltar</option>
+                            <option>Greece</option>
+                            <option>Greenland</option>
+                            <option>Grenada</option>
+                            <option>Guadeloupe</option>
+                            <option>Guam</option>
+                            <option>Guatemala</option>
+                            <option>Guernsey</option>
+                            <option>Guinea</option>
+                            <option>Guinea-Bissau</option>
+                            <option>Guyana</option>
+                            <option>Haiti</option>
+                            <option>Heard Island and McDonald Islands</option>
+                            <option>Holy See (Vatican City State)</option>
+                            <option>Honduras</option>
+                            <option>Hong Kong</option>
+                            <option>Hungary</option>
+                            <option>Iceland</option>
+                            <option>India</option>
+                            <option>Indonesia</option>
+                            <option>Iran, Islamic Republic of</option>
+                            <option>Iraq</option>
+                            <option>Ireland</option>
+                            <option>Isle of Man</option>
+                            <option>Israel</option>
+                            <option>Italy</option>
+                            <option>Jamaica</option>
+                            <option>Japan</option>
+                            <option>Jersey</option>
+                            <option>Jordan</option>
+                            <option>Kazakhstan</option>
+                            <option>Kenya</option>
+                            <option>Kiribati</option>
+                            <option>Korea, Democratic People's Republic of</option>
+                            <option>Korea, Republic of</option>
+                            <option>Kuwait</option>
+                            <option>Kyrgyzstan</option>
+                            <option>Lao People's Democratic Republic</option>
+                            <option>Latvia</option>
+                            <option>Lebanon</option>
+                            <option>Lesotho</option>
+                            <option>Liberia</option>
+                            <option>Libya</option>
+                            <option>Liechtenstein</option>
+                            <option>Lithuania</option>
+                            <option>Luxembourg</option>
+                            <option>Macao</option>
+                            <option>Macedonia, the former Yugoslav Republic of</option>
+                            <option>Madagascar</option>
+                            <option>Malawi</option>
+                            <option>Malaysia</option>
+                            <option>Maldives</option>
+                            <option>Mali</option>
+                            <option>Malta</option>
+                            <option>Marshall Islands</option>
+                            <option>Mauritania</option>
+                            <option>Mauritius</option>
+                            <option>Mayotte</option>
+                            <option>Mexico</option>
+                            <option>Micronesia, Federated States of</option>
+                            <option>Moldova, Republic of</option>
+                            <option>Monaco</option>
+                            <option>Mongolia</option>
+                            <option>Montenegro</option>
+                            <option>Montserrat</option>
+                            <option>Morocco</option>
+                            <option>Mozambique</option>
+                            <option>Myanmar</option>
+                            <option>Namibia</option>
+                            <option>Nauru</option>
+                            <option>Nepal</option>
+                            <option>Netherlands</option>
+                            <option>New Caledonia</option>
+                            <option>New Zealand</option>
+                            <option>Nicaragua</option>
+                            <option>Niger</option>
+                            <option>Nigeria</option>
+                            <option>Niue</option>
+                            <option>Norfolk Island</option>
+                            <option>Northern Mariana Islands</option>
+                            <option>Norway</option>
+                            <option>Oman</option>
+                            <option>Pakistan</option>
+                            <option>Palau</option>
+                            <option>Palestinian Territory, Occupied</option>
+                            <option>Panama</option>
+                            <option>Papua New Guinea</option>
+                            <option>Paraguay</option>
+                            <option>Peru</option>
+                            <option>Philippines</option>
+                            <option>Pitcairn</option>
+                            <option>Poland</option>
+                            <option>Portugal</option>
+                            <option>Puerto Rico</option>
+                            <option>Qatar</option>
+                            <option>Réunion</option>
+                            <option>Romania</option>
+                            <option>Russian Federation</option>
+                            <option>Rwanda </option>
+                            <option>Saint Barthélemy</option>
+                            <option>Saint Helena, Ascension and Tristan da Cunha</option>
+                            <option>Saint Kitts and Nevis</option>
+                            <option>Saint Lucia</option>
+                            <option>Saint Martin (French part)</option>
+                            <option>Saint Pierre and Miquelon</option>
+                            <option>Saint Vincent and the Grenadines</option>
+                            <option>Samoa</option>
+                            <option>San Marino</option>
+                            <option>Sao Tome and Principe</option>
+                            <option>Saudi Arabia</option>
+                            <option>Senegal</option>
+                            <option>Serbia</option>
+                            <option>Seychelles</option>
+                            <option>Sierra Leone</option>
+                            <option>Singapore</option>
+                            <option>Sint Maarten (Dutch part)</option>
+                            <option>Slovakia</option>
+                            <option>Slovenia</option>
+                            <option>Solomon Islands</option>
+                            <option>Somalia</option>
+                            <option>South Africa</option>
+                            <option>South Georgia and the South Sandwich Islands</option>
+                            <option>South Sudan</option>
+                            <option>Spain</option>
+                            <option>Sri Lanka</option>
+                            <option>Sudan</option>
+                            <option>Suriname</option>
+                            <option>Svalbard and Jan Mayen</option>
+                            <option>Swaziland</option>
+                            <option>Sweden</option>
+                            <option>Switzerland</option>
+                            <option>Syrian Arab Republic</option>
+                            <option>Taiwan, Province of China</option>
+                            <option>Tajikistan</option>
+                            <option>Tanzania, United Republic of</option>
+                            <option>Thailand</option>
+                            <option>Timor-Leste</option>
+                            <option>Togo</option>
+                            <option>Tokelau</option>
+                            <option>Tonga</option>
+                            <option>Trinidad and Tobago</option>
+                            <option>Tunisia</option>
+                            <option>Turkey</option>
+                            <option>Turkmenistan</option>
+                            <option>Turks and Caicos Islands</option>
+                            <option>Tuvalu</option>
+                            <option>Uganda</option>
+                            <option>Ukraine</option>
+                            <option>United Arab Emirates</option>
+                            <option>United Kingdom</option>
+                            <option>United States</option>
+                            <option>United States Minor Outlying Islands</option>
+                            <option>Uruguay</option>
+                            <option>Uzbekistan</option>
+                            <option>Vanuatu</option>
+                            <option>Venezuela, Bolivarian Republic of</option>
+                            <option>Viet Nam</option>
+                            <option>Virgin Islands, British</option>
+                            <option>Virgin Islands, U.S.</option>
+                            <option>Wallis and Futuna</option>
+                            <option>Western Sahara</option>
+                            <option>Yemen</option>
+                            <option>Zambia</option>
+                            <option>Zimbabwe</option>
+                        </select><br>   
+                        <label>Date of crime :</label>
+                        <input type="date" ng-model="crime.crimedate" class="form-control"><br>
+                        <label>Date of birth day :</label>
+                        <input type="date" ng-model="crime.dob" class="form-control"><br>
+                        <select name="Crime" ng-model="crime.name" class="form-control">
+                            <option value="">Criminal case</option>
+                            <option> Maritime Problems</option>
+                            <option> Traffic accidents</option>
+                            <option> Corruption</option>
+                            <option> Gender Based Violence</option>
+                            <option> Child based Violence</option>
+                            <option> Abused by Police Officer</option>
+                        </select><br>
+                        <textarea name="comments" ng-model="crime.description" rows="5" cols="20" class="form-control" placeholder="crime history"></textarea><br>                       
+                        <div class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_error" style="text-align:left;display:none">
+                            <strong> <i class="fa fa-times-circle"></i></strong> <span id="isa_error_message"></span>
+                        </div>
+                        <div class="alert alert-success col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_success" style="text-align:left;display:none">
+                            <strong> <i class="fa fa-check"></i></strong> <span id="isa_success_message"></span>
+                        </div>
+                        <button class="btn btn-success pull-right" ng-click="publishcrime(crime)">save</button>
+                    </form> 
+                </div>
+                <div class= "footer" style="color:#fff;padding: 8px;position: absolute;bottom:0px">
+                    <footer> <center><h4> &copy;2016 AIDIS System | All rights reserved.</h4> </center> </footer>
+                </div>
+            </div>
+            <aside style="padding: 8px;color:#fff"> 
+                <br><br>
+                <center><h4>**Wanted**</h4></center>
+                <center>
+                    <img src="{{wanted.coverurl}}" alt="Mountain View" style="width:200px;height:200px;">
+                    <h6> Names:<b>{{wanted.fname}} {{wanted.lname}}</b></h6> 
+                    <h6>Crime: <b>{{wanted.crimename}}</b></h6>
+                </center>
+            </aside>
+        </div>
+        <script src="../js/jquery.js"></script>
+        <script src="../js/bootstrap.js"></script>
+        <script src="../js/angular.min.js"></script>
+        <script src="../js/services.js"></script>
+        <script src="../js/application.js"></script>
+        <script src="../js/dirPagination.js"></script>
+        <script src="../js/SimpleAjaxUploader.js"></script> 
+    </body>
+</html>

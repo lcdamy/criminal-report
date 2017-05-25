@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+    <head>
+        <title>AIDIS</title>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/sweetalert.css" rel="stylesheet">
+        <style>
+            #logo1 {
+                float: right;
+                width: 100px;
+                margin-top: 16px;
+            }
+            #logo2 {
+                float: left;
+                width: 100px;
+
+            }
+        </style>
+    </head>
+
+    <body class="bgc" ng-app="So_Pharma" ng-controller="set_ctrl" ng-init="session_dash()">
+        <div class="wrap">
+            <div>
+                <div>
+                    <img id="logo1" alt="logo1" src="../img/dr.png"/><br>
+                </div>
+                <div>
+                    <img id= "logo2"  alt="logo2" src="../img/Police.png"/>
+                </div>
+                <h1> 
+                    Automated ID Information System Based on Criminal Records     
+                </h1>		
+            </div>  
+            <div>
+                <nav class="menu">
+                    <ul> 
+                        <li> <a href="/" ><i class="fa fa-home" aria-hidden="true"></i>&nbsp;HOME </a></li>
+                        <li> <a href="/crime/info"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;CRIMINAL-LIST </a></li>
+                        <li> <a href="/crime/publish"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;MOST-WANTED </a></li>
+                        <li ng-if="'<?php echo $access; ?>'==='2'" class="activeme"> <a href="/crime/setting"><i class="fa fa-cogs" aria-hidden="true"></i>&nbsp;SETTING </a></li>
+                        <li> <a href="" ng-click="logout()"> <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;LOGOUT </a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="content" >
+                <center style="margin-bottom:8px;"><h3>**SYSTEM ADMINS**</h3></center>
+                <div class="row" style="padding: 16px">
+                    <div class="col-md-12" >
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>NAME</th>
+                                        <th>EMAIL</th>
+                                        <th>PHONE</th>
+                                        <th>STATUS</th>
+                                        <th>PRIVILEGE</th>
+                                        <th>CHANGE PRIVILEGE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="user in users | filter:searchuser | itemsPerPage:8" pagination-id="userpage">
+                                        <td>{{user.fname}} {{user.lname}}</td>
+                                        <td>{{user.email}}</td>
+                                        <td>{{user.phone}}</td>
+                                        <td>{{user.status}}</td>
+                                        <td>{{user.prive}}</td>
+                                        <td><b style="font-size:16px;cursor:pointer;position: absolute;right: 24px;"><i ng-click="edituser(user.id,prive)" class="fa fa-floppy-o"></i></b>
+                                            <select class="form-control input-sm" style="width:85%" ng-model="prive">
+                                                <option value="">--Select--</option>
+                                                <option value="1">Simple User</option>
+                                                 <option value="2">Super User</option>
+                                            </select>
+                                        </td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="box-footer">
+                                <div class="pull-right table-box-footer">
+                                    <dir-pagination-controls pagination-id="userpage"> </dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 6px">
+                    <div class="col-md-12" style="padding: 16px">
+                        <center> <h3>Contact Us</h3></center>  
+                        <center><p>Please contact us at our support team with the details below. </p> </center><br>
+                        <center><h3>Republic of Rwanda - Rwanda National Police</h3>
+                            P. O. Box 6304 KIGALI - RWANDA <br>
+                            Phone: +250 788311155 <br>
+                            systemadmin.support@police.gov.rw </center><br>
+                    </div>
+                </div>
+                <div class= "footer" style="color:#fff;padding: 8px;position: absolute;bottom:0px">
+                    <footer> <center><h4> &copy;2016 AIDIS System | All rights reserved.</h4> </center> </footer>
+                </div>
+            </div>
+            <aside style="padding: 8px;color:#fff">
+                <h3><u>Add user</u></h3>  
+                <form id="adduser">
+                    <input type="text" ng-model="crime.fname" name="firstname" class="form-control" placeholder="first name"><br>
+                    <input type="text" ng-model="crime.lname" name="lastname" class="form-control" placeholder="last name"><br>
+                    <input type="text" ng-model="crime.email" name="email" class="form-control" placeholder="E-mail"><br>
+                    <input type="text" ng-model="crime.username" name="email" class="form-control" placeholder="Username"><br>
+                    <input type="text" ng-model="crime.phone" name="email" class="form-control" placeholder="Phone"><br>
+                    <select name="Gender" ng-model="crime.gender" class="form-control">
+                        <option value="">Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select><br>                               
+                    <select name="Crime" ng-model="crime.privilege" class="form-control">
+                        <option value="">Select privilege</option>
+                        <option value="2" ng-selected="crime.privilege=='2'"> Super admin </option>
+                        <option value="1" ng-selected="crime.privilege=='1'"> Simple user</option>             
+                    </select><br> 
+                    <input type="password" ng-model="crime.password" id="pass1" placeholder="password" class="form-control"><br>
+                    <input type="password" placeholder="Re-password" id="pass2" class="form-control"><br>
+                    <div class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_error" style="text-align:left;display:none">
+                        <strong> <i class="fa fa-times-circle"></i></strong> <span id="isa_error_message"></span>
+                    </div>
+                    <div class="alert alert-success col-lg-12 col-md-12 col-sm-12 col-xs-12" id="isa_success" style="text-align:left;display:none">
+                        <strong> <i class="fa fa-check"></i></strong> <span id="isa_success_message"></span>
+                    </div>
+                    <button class="btn btn-success pull-right" ng-click="adduser(crime)">save</button>
+                </form>
+            </aside>
+        </div>
+        <script src="../js/jquery.js"></script>
+        <script src="../js/bootstrap.js"></script>
+        <script src="../js/angular.min.js"></script>
+        <script src="../js/services.js"></script>
+        <script src="../js/application.js"></script>
+        <script src="../js/dirPagination.js"></script>
+        <script src='../js/sweetalert.min.js' charset='utf-8'></script>
+    </body>
+</html>

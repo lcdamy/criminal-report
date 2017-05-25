@@ -1,0 +1,102 @@
+.bgc {
+    background:#046d9f;
+}
+.wrap {
+    min-width: 600px;
+    width:80%;
+    margin: auto;
+    background: #046d9f;
+
+}
+
+.content, aside {
+    height: 1040px;
+}
+
+.content {
+    background: rgb(200,200,200);
+    float: left;
+    width: 80%;
+    position: relative;
+}
+.footer {
+    min-width:600px;
+    width:100%;
+    margin:auto;
+    background: #3f4044;
+}
+.menu {
+    border-style: solid;
+    border-width: 10px;
+}
+
+nav {
+    height: 40px;
+    background-color: #0000A0;
+
+}
+nav ul{
+    list-style: none;
+}
+
+nav ul li a{
+    float:left;
+    text-decoration: none;
+    color:#FFFFFF;
+    padding:0px 40px;
+    text-align: center;
+
+}
+
+nav ul li a:hover {
+    background-color: #046d9f;
+    color:#FFFFFF;
+}
+.activeme a:link{
+    background-color: #046d9f;
+}
+
+aside {
+    background: #046d9f;
+    float: left;
+    width: 20%;
+    position: center;
+}
+
+aside ul {
+    list-style: none;
+    padding-left: 0;
+}
+h1, h4 {
+    text-align: center;
+    color: white;
+}
+img {
+    width: 100px;
+    height: 100px;
+    position: auto;
+}
+select {
+    width: 150px;
+}
+
+.crime:hover{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    cursor:pointer;
+}
+
+.release{
+    opacity: 0.8;
+    background: green!important;
+}
+
+.myindvidual:hover{
+    font-weight: bold;
+}
+.myorganization:hover{
+    font-weight: bold;
+}
+ .myactive{
+    font-weight: bold;
+    text-decoration: underline;
+}
